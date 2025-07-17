@@ -5,6 +5,7 @@ from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain.chains import RetrievalQA
 from langchain_community.chat_models import ChatOpenAI  # or use HuggingFaceHub, ChatLiteLLM, etc.
 from langchain.schema import HumanMessage
+from pydantic import BaseModel
 
 import os
 
