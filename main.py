@@ -4,6 +4,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain.chains import RetrievalQA
 from langchain_community.chat_models import ChatOpenAI  # or use HuggingFaceHub, ChatLiteLLM, etc.
+from langchain.schema import HumanMessage
 
 import os
 
@@ -22,7 +23,7 @@ try:
     retriever = vectorstore.as_retriever()
     llm = ChatOpenAI(
         model="granite-13b-chat",
-        open_api_key=os.getenv("OPENAI_API_KEY"),
+        openai_api_key=os.getenv("OPENAI_API_KEY"),
         openai_api_base=os.getenv("OPENAI_BASE_URL"),
         temperature=0.5
     )
@@ -31,20 +32,13 @@ except Exception as e:
     print(f"Failed to initialize chatbot: {e}")
     chatbot = None
 
+class ChatRequest(BaseModel):
+    question: str
+
 @app.post("/chat")
-async def chat(request: Request):
-    if chatbot is None:
-        raise HTTPException(status_code=503, detail="Chatbot is not ready")
-
+async def chat_endpoint(request: ChatRequest):
     try:
-        data = await request.json()
-        question = data.get("question")
-
-        if not question or not isinstance(question, str):
-            raise HTTPException(status_code=400, detail="Missing or invalid 'question' in request body.")
-
-        cleaned_question = question.replace("\n", " ")
-        response = chatbot.run(cleaned_question)
-        return {"response": response}
+        response = chat([HumanMessage(content=request.question)])
+        return {"response": response.content}
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
