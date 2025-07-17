@@ -39,7 +39,7 @@ class ChatRequest(BaseModel):
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest):
     try:
-        response = chat([HumanMessage(content=request.question)])
+        response = llm([HumanMessage(content=request.question)])
         return {"response": response.content}
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
