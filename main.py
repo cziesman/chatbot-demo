@@ -7,6 +7,10 @@ from langchain.chat_models import ChatOpenAI  # or use HuggingFaceHub, ChatLiteL
 
 import os
 
+import pkg_resources
+print("INSTALLED PACKAGES:")
+print([pkg.key for pkg in pkg_resources.working_set])
+
 app = FastAPI()
 
 # Load index and build the chatbot once at startup
