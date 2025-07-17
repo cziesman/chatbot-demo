@@ -21,7 +21,7 @@ try:
     vectorstore = FAISS.load_local(INDEX_DIR, embedder, allow_dangerous_deserialization=True)
     retriever = vectorstore.as_retriever()
     llm = ChatOpenAI(
-        model="cognitivecomputations/dolphin-mistral-24b-venice-edition",
+        model="cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
         openai_api_key=os.getenv("OPENAI_API_KEY"),
         openai_api_base=os.getenv("OPENAI_BASE_URL", "https://openrouter.ai/api/v1"),
     )
