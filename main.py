@@ -20,7 +20,11 @@ try:
     embedder = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
     vectorstore = FAISS.load_local(INDEX_DIR, embedder, allow_dangerous_deserialization=True)
     retriever = vectorstore.as_retriever()
-    llm = ChatOpenAI(temperature=0.2)  # or another compatible LLM
+    llm = ChatOpenAI(
+        model="mistralai/mistral-7b-instruct",
+        openai_api_key=os.getenv("OPENAI_API_KEY"),
+        openai_api_base=os.getenv("OPENAI_BASE_URL", "https://openrouter.ai/api/v1"),
+    )
     chatbot = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
 except Exception as e:
     print(f"Failed to initialize chatbot: {e}")

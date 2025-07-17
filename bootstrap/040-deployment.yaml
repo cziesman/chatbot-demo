@@ -37,6 +37,9 @@ spec:
           volumeMounts:
             - name: shared-storage
               mountPath: /workspace/shared-storage
+          envFrom:
+            - secretRef:
+                name: openrouter-secret
           env:
             - name: PYTHONUNBUFFERED
               value: "1"
