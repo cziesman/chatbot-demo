@@ -3,3 +3,4 @@ pymupdf
 sentence-transformers
 faiss-cpu
 requests
+uvicorn

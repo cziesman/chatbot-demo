@@ -1,0 +1,8 @@
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  name: chatbot-image
+  namespace: compliance-chatbot
+spec:
+  lookupPolicy:
+    local: false

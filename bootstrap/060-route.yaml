@@ -1,0 +1,14 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: chatbot
+  namespace: compliance-chatbot
+spec:
+  to:
+    kind: Service
+    name: chatbot-service
+  port:
+    targetPort: 80
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
