@@ -21,9 +21,9 @@ try:
     vectorstore = FAISS.load_local(INDEX_DIR, embedder, allow_dangerous_deserialization=True)
     retriever = vectorstore.as_retriever()
     llm = ChatOpenAI(
-        model="cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
-        openai_api_key=os.getenv("OPENAI_API_KEY"),
-        openai_api_base=os.getenv("OPENAI_BASE_URL", "https://openrouter.ai/api/v1"),
+        model="granite-13b-chat",
+        openai_api_base=os.getenv("OPENAI_BASE_URL"),
+        temperature=0.5
     )
     chatbot = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
 except Exception as e:
