@@ -13,8 +13,30 @@ spec:
       labels:
         app: chatbot
     spec:
+      volumes:
+        - name: shared-storage
+          persistentVolumeClaim:
+            claimName: chatbot-pvc
+        - name: chatbot-scripts
+          configMap:
+            name: chatbot-scripts
+      initContainers:
+        - name: embed-index
+          image: registry.redhat.io/ubi9/python-311
+          command: ["python", "/scripts/embed.py"]
+          volumeMounts:
+            - name: shared-storage
+              mountPath: /workspace/shared-storage
+            - name: chatbot-scripts
+              mountPath: /scripts
       containers:
         - name: chatbot
           image: image-registry.openshift-image-registry.svc:5000/compliance-chatbot/chatbot-image:latest
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: shared-storage
+              mountPath: /workspace/shared-storage
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"

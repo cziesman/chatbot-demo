@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain.chains import RetrievalQA
-from langchain.chat_models import ChatOpenAI  # or use HuggingFaceHub, ChatLiteLLM, etc.
+from langchain_community.chat_models import ChatOpenAI  # or use HuggingFaceHub, ChatLiteLLM, etc.
 
 import os
 
