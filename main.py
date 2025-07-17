@@ -22,7 +22,7 @@ try:
     retriever = vectorstore.as_retriever()
     llm = ChatOpenAI(
         model="granite-13b-chat",
-        open_api_key=os.getenv("OPENAI_API_KEY")
+        open_api_key=os.getenv("OPENAI_API_KEY"),
         openai_api_base=os.getenv("OPENAI_BASE_URL"),
         temperature=0.5
     )
