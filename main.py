@@ -21,7 +21,7 @@ INDEX_DIR = "/workspace/shared-storage/index"
 
 try:
     # Disable cert check by creating a custom httpx Client
-    async_client = httpx.AsyncClient(verify=False)
+    http_client = httpx.Client(verify=False)
 
     embedder = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
     vectorstore = FAISS.load_local(INDEX_DIR, embedder, allow_dangerous_deserialization=True)
@@ -39,7 +39,7 @@ try:
         openai_api_key=os.getenv("OPENAI_API_KEY"),
         model="granite-13b-chat",
         temperature=0.5,
-        http_client=async_client
+        http_client=http_client
     )
     chatbot = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
 except Exception as e:
@@ -50,13 +50,13 @@ class ChatRequest(BaseModel):
     question: str
 
 @app.post("/chat")
-async def chat_endpoint(request: ChatRequest):
+def chat_endpoint(request: ChatRequest):
     try:
         if chatbot is None:
             raise RuntimeError("Chatbot is not initialized.")
 
         print(f"Sending to LLM: {request.question}")
-        response = await llm.ainvoke([HumanMessage(content=request.question)])
+        response = llm.invoke([HumanMessage(content=request.question)])
         print(f"LLM responded: {response}")
         return {"response": response["result"]}
     except Exception as e:
