@@ -39,7 +39,11 @@ class ChatRequest(BaseModel):
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest):
     try:
+        print(f"Sending to LLM: {request.question}")
         response = llm([HumanMessage(content=request.question)])
+        print(f"LLM responded: {response}")
         return {"response": response.content}
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         return JSONResponse(status_code=500, content={"error": str(e)})
