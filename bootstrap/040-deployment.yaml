@@ -16,8 +16,8 @@ spec:
       volumes:
         - name: shared-storage
           persistentVolumeClaim:
-            claimName: compliance-pvc
-        - name: chatbot-scripts
+            claimName: compliance
+        - name: compliance-scripts
           configMap:
             name: compliance-scripts
       initContainers:
