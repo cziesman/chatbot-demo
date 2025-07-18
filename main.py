@@ -6,6 +6,7 @@ from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage
 from pydantic import BaseModel
+import httpx
 
 import os
 
