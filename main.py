@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain.chains import RetrievalQA
-from langchain_community.chat_models import ChatOpenAI  # or use HuggingFaceHub, ChatLiteLLM, etc.
+from langchain_community.chat_models import ChatGranite
 from langchain.schema import HumanMessage
 from pydantic import BaseModel
 
@@ -25,11 +25,12 @@ try:
     embedder = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
     vectorstore = FAISS.load_local(INDEX_DIR, embedder, allow_dangerous_deserialization=True)
     retriever = vectorstore.as_retriever()
-    llm = ChatOpenAI(
+
+    llm = ChatGranite(
         model="granite-13b-chat",
         openai_api_key=os.getenv("OPENAI_API_KEY"),
-        openai_api_base=os.getenv("OPENAI_BASE_URL"),
-        temperature=0.5,
+        base_url=os.getenv("OPENAI_BASE_URL"),
+        model_kwargs={"temperature": 0.5},
         http_client=http_client
     )
     chatbot = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
@@ -43,10 +44,12 @@ class ChatRequest(BaseModel):
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest):
     try:
+        if chatbot is None:
+            raise RuntimeError("Chatbot is not initialized.")
         print(f"Sending to LLM: {request.question}")
-        response = llm([HumanMessage(content=request.question)])
+        response = chatbot.run(request.question)
         print(f"LLM responded: {response}")
-        return {"response": response.content}
+        return {"response": response}
     except Exception as e:
         import traceback
         traceback.print_exc()
