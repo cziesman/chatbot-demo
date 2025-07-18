@@ -19,6 +19,9 @@ app = FastAPI()
 INDEX_DIR = "/workspace/shared-storage/index"
 
 try:
+    # Disable cert check by creating a custom httpx Client
+    http_client = httpx.Client(verify=False)
+
     embedder = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
     vectorstore = FAISS.load_local(INDEX_DIR, embedder, allow_dangerous_deserialization=True)
     retriever = vectorstore.as_retriever()
@@ -27,9 +30,7 @@ try:
         openai_api_key=os.getenv("OPENAI_API_KEY"),
         openai_api_base=os.getenv("OPENAI_BASE_URL"),
         temperature=0.5,
-        model_kwargs={
-            "verify": False
-        }
+        http_client=http_client
     )
     chatbot = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
 except Exception as e:
