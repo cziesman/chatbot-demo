@@ -21,6 +21,16 @@ spec:
           configMap:
             name: compliance-scripts
       initContainers:
+        - name: fetch-pdfs
+          image: curlimages/curl:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              mkdir -p /workspace/shared-storage/pdfs && \
+              curl -o /workspace/shared-storage/pdfs/cch.pdf https://www.federalreserve.gov/boarddocs/supmanual/cch/cch.pdf
+          volumeMounts:
+            - name: shared-storage
+              mountPath: /workspace/shared-storage
         - name: embed-index
           image: image-registry.openshift-image-registry.svc:5000/compliance-chatbot/compliance:latest
           command: ["python", "/scripts/embed.py"]
