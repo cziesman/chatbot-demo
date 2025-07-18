@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: chatbot-service
+  name: compliance
   namespace: compliance-chatbot
 spec:
   selector:
-    app: chatbot
+    app: compliance
   ports:
     - port: 80
       targetPort: 8080

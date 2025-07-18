@@ -1,14 +1,14 @@
 kind: BuildConfig
 apiVersion: build.openshift.io/v1
 metadata:
-  name: chatbot-build
+  name: compliance
   namespace: compliance-chatbot
 spec:
   nodeSelector: null
   output:
     to:
       kind: ImageStreamTag
-      name: 'chatbot-image:latest'
+      name: 'compliance:latest'
   resources: {}
   successfulBuildsHistoryLimit: 5
   failedBuildsHistoryLimit: 5

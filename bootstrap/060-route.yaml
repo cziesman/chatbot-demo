@@ -1,12 +1,12 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: chatbot
+  name: compliance
   namespace: compliance-chatbot
 spec:
   to:
     kind: Service
-    name: chatbot-service
+    name: compliance
   port:
     targetPort: 80
   tls:

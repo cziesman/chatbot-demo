@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: chatbot
+  name: compliance
   namespace: compliance-chatbot
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: chatbot
+      app: compliance
   template:
     metadata:
       labels:
-        app: chatbot
+        app: compliance
     spec:
       volumes:
         - name: shared-storage
           persistentVolumeClaim:
-            claimName: chatbot-pvc
+            claimName: compliance-pvc
         - name: chatbot-scripts
           configMap:
-            name: chatbot-scripts
+            name: compliance-scripts
       initContainers:
         - name: embed-index
           image: registry.redhat.io/ubi9/python-311
@@ -27,19 +27,16 @@ spec:
           volumeMounts:
             - name: shared-storage
               mountPath: /workspace/shared-storage
-            - name: chatbot-scripts
+            - name: compliance-scripts
               mountPath: /scripts
       containers:
-        - name: chatbot
-          image: image-registry.openshift-image-registry.svc:5000/compliance-chatbot/chatbot-image:latest
+        - name: compliance
+          image: image-registry.openshift-image-registry.svc:5000/compliance-chatbot/compliance:latest
           ports:
             - containerPort: 8080
           volumeMounts:
             - name: shared-storage
               mountPath: /workspace/shared-storage
-          envFrom:
-            - secretRef:
-                name: openrouter-secret
           env:
             - name: PYTHONUNBUFFERED
               value: "1"
