@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain.chains import RetrievalQA
-from langchain_community.chat_models import ChatGranite
+from langchain_community.chat_models.granite import ChatGranite
 from langchain.schema import HumanMessage
 from pydantic import BaseModel
 
