@@ -26,7 +26,10 @@ try:
         model="granite-13b-chat",
         openai_api_key=os.getenv("OPENAI_API_KEY"),
         openai_api_base=os.getenv("OPENAI_BASE_URL"),
-        temperature=0.5
+        temperature=0.5,
+        model_kwargs={
+            "verify": False
+        }
     )
     chatbot = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
 except Exception as e:
