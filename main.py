@@ -21,7 +21,7 @@ INDEX_DIR = "/workspace/shared-storage/index"
 
 try:
     # Disable cert check by creating a custom httpx Client
-    http_client = httpx.AsyncClient(verify=False)
+    http_client = httpx.Client(verify=False)
 
     embedder = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
     vectorstore = FAISS.load_local(INDEX_DIR, embedder, allow_dangerous_deserialization=True)
@@ -55,7 +55,7 @@ async def chat_endpoint(request: ChatRequest):
         if chatbot is None:
             raise RuntimeError("Chatbot is not initialized.")
         print(f"Sending to LLM: {request.question}")
-        response = await chatbot.ainvoke(request.question)
+        response = chatbot.run(request.question)
         print(f"LLM responded: {response}")
         return {"response": response["result"]}
     except Exception as e:
