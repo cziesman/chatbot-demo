@@ -1,0 +1,42 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: rag-application
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+rag:
+  qdrant:
+    host: ${QDRANT_HOST:localhost}
+    port: ${QDRANT_PORT:6333}
+    collection-name: documents
+    vector-size: 768
+  model:
+    layoutlm:
+      path: ${LAYOUTLM_MODEL_PATH:/models/layoutlmv3.onnx}
+      tokenizer-path: ${LAYOUTLM_TOKENIZER_PATH:/models/layoutlmv3-tokenizer}
+    device: ${MODEL_DEVICE:CPU}
+    openvino:
+      endpoint: ${OPENVINO_ENDPOINT:http://openvino-service:8081}
+  granite:
+    endpoint: ${GRANITE_ENDPOINT:http://granite:8080/v1/chat/completions}
+    model-name: granite-7b-instruct
+  embedding:
+    model-name: sentence-transformers/all-MiniLM-L6-v2
+    batch-size: 32
+
+logging:
+  level:
+    com.example.rag: DEBUG
+    ai.onnxruntime: INFO
+    io.qdrant: INFO

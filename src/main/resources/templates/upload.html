@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Upload Documents - RAG Application</title>
+</head>
+<body>
+<main>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-upload me-2"></i>Upload PDF Documents
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Success/Error Messages -->
+                    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span th:text="${success}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <span th:text="${error}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <!-- Upload Form -->
+                    <form th:action="@{/documents/upload}" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Select PDF File</label>
+                            <input type="file" class="form-control" id="file" name="file"
+                                   accept=".pdf" required>
+                            <div class="form-text">
+                                Only PDF files are supported. Maximum file size: 50MB
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload me-2"></i>Upload Document
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Upload Instructions -->
+                    <div class="mt-4">
+                        <h6>Instructions:</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Upload PDF documents to make them searchable</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Documents are processed using OpenVINO LayoutLMv3</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Text is embedded and stored in vector database</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Use the chat interface to ask questions about your documents</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

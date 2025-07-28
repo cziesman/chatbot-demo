@@ -1,0 +1,184 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qdrant
+  namespace: compliance
+  labels:
+    app: qdrant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qdrant
+  template:
+    metadata:
+      labels:
+        app: qdrant
+    spec:
+      containers:
+        - name: qdrant
+          image: qdrant/qdrant:v1.7.0
+          ports:
+            - containerPort: 6333
+            - containerPort: 6334
+          env:
+            - name: QDRANT__SERVICE__HTTP_PORT
+              value: "6333"
+            - name: QDRANT__SERVICE__GRPC_PORT
+              value: "6334"
+          volumeMounts:
+            - name: qdrant-storage
+              mountPath: /qdrant/storage
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 6333
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 6333
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: qdrant-storage
+          persistentVolumeClaim:
+            claimName: qdrant-storage
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: granite-model
+  namespace: compliance
+  labels:
+    app: granite-model
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: granite-model
+  template:
+    metadata:
+      labels:
+        app: granite-model
+    spec:
+      containers:
+        - name: granite-model
+          image: quay.io/modh/text-generation-inference:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MODEL_ID
+              value: "ibm-granite/granite-7b-instruct"
+            - name: PORT
+              value: "8080"
+            - name: HUGGING_FACE_HUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: huggingface-secret
+                  key: token
+          volumeMounts:
+            - name: model-storage
+              mountPath: /models
+            - name: shm
+              mountPath: /dev/shm
+          resources:
+            requests:
+              memory: "8Gi"
+              cpu: "2000m"
+              nvidia.com/gpu: 1
+            limits:
+              memory: "16Gi"
+              cpu: "4000m"
+              nvidia.com/gpu: 1
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 120
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+      volumes:
+        - name: model-storage
+          persistentVolumeClaim:
+            claimName: granite-models
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 2Gi
+      nodeSelector:
+        node.kubernetes.io/instance-type: "gpu-node"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: compliance-chatbot
+  namespace: compliance
+  labels:
+    app: compliance-chatbot
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: compliance-chatbot
+  template:
+    metadata:
+      labels:
+        app: compliance-chatbot
+    spec:
+      containers:
+        - name: rag-app
+          image: 'image-registry.openshift-image-registry.svc:5000/compliance/compliance-chatbot:latest'
+          ports:
+            - containerPort: 8080
+          env:
+            - name: QDRANT_HOST
+              value: "qdrant"
+            - name: QDRANT_PORT
+              value: "6334"
+            - name: GRANITE_ENDPOINT
+              value: "http://granite:8080/v1/chat/completions"
+            - name: OPENVINO_MODEL_PATH
+              value: "/models/layoutlmv3"
+          volumeMounts:
+            - name: openvino-models
+              mountPath: /models
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1000m"
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+      volumes:
+        - name: openvino-models
+          persistentVolumeClaim:
+            claimName: openvino-models
+
+
+

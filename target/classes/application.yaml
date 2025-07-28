@@ -1,0 +1,6 @@
+server:
+  port: 8080
+granite:
+  api:
+    url: https://your-granite-gateway-url
+    key: local

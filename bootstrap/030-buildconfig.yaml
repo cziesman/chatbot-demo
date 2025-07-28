@@ -1,0 +1,27 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: compliance-chatbot
+  namespace: compliance
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'compliance-chatbot:latest'
+  resources: {}
+  successfulBuildsHistoryLimit: 2
+  failedBuildsHistoryLimit: 2
+  strategy:
+    type: Docker
+    dockerStrategy: {}
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/cziesman/chatbot-demo.git'
+      ref: main
+  triggers:
+    - type: ConfigChange
+  runPolicy: Serial
+

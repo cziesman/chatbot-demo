@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>PDF Chatbot</title>
+    <meta charset="UTF-8"/>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        .chat-box { border: 1px solid #ccc; padding: 1em; width: 600px; }
+        .chat-message { margin-bottom: 1em; }
+        label { display: block; margin-bottom: 0.5em; }
+    </style>
+</head>
+<body>
+<h1>PDF Chatbot with OpenVINO + Granite + Qdrant</h1>
+
+<div>
+    <form method="post" enctype="multipart/form-data" th:action="@{/upload}">
+        <label for="file">Upload PDF to ingest:</label>
+        <input type="file" name="file" id="file" accept=".pdf" required/>
+        <button type="submit">Upload & Index</button>
+    </form>
+</div>
+
+<div style="margin-top: 2em;">
+    <form method="post" th:action="@{/chat}">
+        <label for="question">Ask a question:</label>
+        <input type="text" id="question" name="question" th:value="${question}" style="width: 400px;" required/>
+        <button type="submit">Chat</button>
+    </form>
+</div>
+
+<div class="chat-box" style="margin-top: 2em;" th:if="${answer}">
+    <div class="chat-message">
+        <strong>You asked:</strong> <span th:text="${question}"></span>
+    </div>
+    <div class="chat-message">
+        <strong>Answer:</strong> <span th:text="${answer}"></span>
+    </div>
+</div>
+
+<div style="color: green; margin-top: 1em;" th:if="${message}">
+    <p th:text="${message}"></p>
+</div>
+
+</body>
+</html>

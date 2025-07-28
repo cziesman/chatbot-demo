@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: qdrant
+  namespace: compliance
+spec:
+  selector:
+    app: qdrant
+  ports:
+    - name: http
+      port: 6333
+      targetPort: 6333
+    - name: grpc
+      port: 6334
+      targetPort: 6334
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: granite
+  namespace: compliance
+spec:
+  selector:
+    app: granite-model
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: compliance-chatbot
+  namespace: compliance
+spec:
+  selector:
+    app: compliance-chatbot
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP

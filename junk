@@ -1,0 +1,31 @@
+// Spring Boot project with controllers, services, and a Dockerfile
+// Handles PDF upload, embedding, vector store, and Granite chat interaction
+// This is a simplified complete version of the app, using stubbed embedding logic
+
+// ChatRequest.java
+package com.example.chatbot.model;
+
+
+// FileUploadController.java
+package com.example.chatbot.controller;
+
+// ChatController.java
+package com.example.chatbot.controller;
+
+// EmbeddingService.java
+package com.example.chatbot.service;
+
+// VectorStoreService.java
+package com.example.chatbot.service;
+
+
+// GraniteChatService.java
+package com.example.chatbot.service;
+
+
+// application.yml
+
+// Dockerfile
+FROM eclipse-temurin:17-jdk
+COPY target/chatbot-app.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]

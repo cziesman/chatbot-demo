@@ -1,0 +1,10 @@
+langchain
+langchain_community
+pymupdf
+sentence-transformers
+faiss-cpu
+requests
+uvicorn
+fastapi
+openai
+httpx
