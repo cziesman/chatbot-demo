@@ -1,7 +1,0 @@
-com/redhat/chatbot/ChatbotApplication.class
-com/redhat/chatbot/service/ChatService.class
-com/redhat/chatbot/service/PdfService.class
-com/redhat/chatbot/model/ChatRequest.class
-com/redhat/chatbot/service/EmbeddingService.class
-com/redhat/chatbot/service/VectorStoreService.class
-com/redhat/chatbot/controller/ChatController.class

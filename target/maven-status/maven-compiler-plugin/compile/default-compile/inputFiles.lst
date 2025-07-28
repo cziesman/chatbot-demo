@@ -1,7 +1,0 @@
-/Users/cziesman/workspace/chatbot-demo/src/main/java/com/redhat/chatbot/ChatbotApplication.java
-/Users/cziesman/workspace/chatbot-demo/src/main/java/com/redhat/chatbot/controller/ChatController.java
-/Users/cziesman/workspace/chatbot-demo/src/main/java/com/redhat/chatbot/model/ChatRequest.java
-/Users/cziesman/workspace/chatbot-demo/src/main/java/com/redhat/chatbot/service/ChatService.java
-/Users/cziesman/workspace/chatbot-demo/src/main/java/com/redhat/chatbot/service/EmbeddingService.java
-/Users/cziesman/workspace/chatbot-demo/src/main/java/com/redhat/chatbot/service/PdfService.java
-/Users/cziesman/workspace/chatbot-demo/src/main/java/com/redhat/chatbot/service/VectorStoreService.java

@@ -4,24 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
 import com.redhat.chatbot.model.SearchResult;
 import io.qdrant.client.QdrantClient;
+import io.qdrant.client.grpc.Collections;
 import io.qdrant.client.grpc.Collections.CreateCollection;
 import io.qdrant.client.grpc.Collections.Distance;
-import io.qdrant.client.grpc.Collections.GetCollectionInfoResponse;
 import io.qdrant.client.grpc.Collections.VectorParams;
 import io.qdrant.client.grpc.Collections.VectorsConfig;
+import io.qdrant.client.grpc.JsonWithInt;
 import io.qdrant.client.grpc.Points.PointId;
 import io.qdrant.client.grpc.Points.PointStruct;
 import io.qdrant.client.grpc.Points.ScoredPoint;
 import io.qdrant.client.grpc.Points.SearchPoints;
-import io.qdrant.client.grpc.Points.SearchResponse;
 import io.qdrant.client.grpc.Points.UpsertPoints;
 import io.qdrant.client.grpc.Points.Vector;
 import io.qdrant.client.grpc.Points.Vectors;
 import io.qdrant.client.grpc.Points.WithPayloadSelector;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -43,7 +42,7 @@ public class VectorStoreService {
 
         try {
             // Check if collection exists
-            GetCollectionInfoResponse response = qdrantClient.getCollectionInfoAsync(collectionName).get();
+            Collections.CollectionInfo response = qdrantClient.getCollectionInfoAsync(collectionName).get();
         } catch (Exception e) {
             // Collection doesn't exist, create it
             createCollection();
@@ -83,9 +82,9 @@ public class VectorStoreService {
                             .build());
 
             // Add metadata
-            pointBuilder.putPayload("text", Value.newBuilder().setStringValue(text).build());
+            pointBuilder.putPayload("text", JsonWithInt.Value.newBuilder().setStringValue(text).build());
             for (Map.Entry<String, Object> entry : metadata.entrySet()) {
-                Value.Builder valueBuilder = Value.newBuilder();
+                JsonWithInt.Value.Builder valueBuilder = JsonWithInt.Value.newBuilder();
                 if (entry.getValue() instanceof String) {
                     valueBuilder.setStringValue((String) entry.getValue());
                 } else if (entry.getValue() instanceof Integer) {
@@ -119,10 +118,10 @@ public class VectorStoreService {
                     .setWithPayload(WithPayloadSelector.newBuilder().setEnable(true).build())
                     .build();
 
-            SearchResponse response = qdrantClient.searchAsync(searchPoints).get();
+            List<ScoredPoint> response = qdrantClient.searchAsync(searchPoints).get();
 
             List<SearchResult> results = new ArrayList<>();
-            for (ScoredPoint point : response.getResultList()) {
+            for (ScoredPoint point : response) {
                 String text = point.getPayloadMap().get("text").getStringValue();
                 String filename = point.getPayloadMap().get("filename").getStringValue();
                 String documentId = point.getPayloadMap().get("document_id").getStringValue();
